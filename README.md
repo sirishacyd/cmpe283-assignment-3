@@ -140,3 +140,27 @@ done
 - dmesg output for `cpuid -l 0x4FFFFFFF`
 ![](screenshots/dmesg_fff.png) 
 - Full [DMESG log](screenshots/dmesg.out) and Test CPUID Logs for [0x4FFFFFFE](screenshots/test_output_ffe.log) and [0x4FFFFFFF](screenshots/test_output_fff.log)
+
+#### Assignment 3 Question Observation
+
+- Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?
+- We have Observered Exit(10) and Exit(12) Increase at a stable Rate. During our observation as they are frequently called.
+- Of the exit types defined in the SDM, which are the most frequent? Least?
+- The Following is the frequency we have obbserved during our assignment 2 & 3.
+```
+| Exit Number | Frequency | Exit Name          |                |
+|-------------|-----------|--------------------|----------------|
+| EXIT(30)    |    936899 | IO_INSTRUCTION     | Most Frequent  |
+| EXIT(49)    |    169656 | EPT_MISCONFIG      |                |
+| EXIT(28)    |     80101 | CR_ACCESS          |                |
+| EXIT(10)    |     42580 | CPUID              |                |
+| EXIT(32)    |     11013 | MSR Access         |                |
+| EXIT(48)    |     10737 | EPT Violation      |                |
+| EXIT(1)     |     10307 | External Interrupt |                |
+| EXIT(7)     |      7452 | Interrupt Window   |                |
+| EXIT(12)    |      3887 | HLT                |                |
+| EXIT(31)    |       221 |                    |                |
+| EXIT(0)     |        11 | EXCEPTION_NMI      |                |
+| EXIT(54)    |         6 | WBINVD             |                |
+| EXIT(29)    |         2 | DR_ACCESS          | Least Frequent |
+```
