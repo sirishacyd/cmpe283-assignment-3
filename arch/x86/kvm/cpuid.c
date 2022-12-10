@@ -1476,26 +1476,62 @@ EXPORT_SYMBOL(total_exits);
 u64 total_time_exits;
 EXPORT_SYMBOL(total_time_exits);
 
+u32 exits_count[69];
+EXPORT_SYMBOL(exits_count);
+
+u64 exits_cycles[69];
+EXPORT_SYMBOL(exits_cycles);
+
+
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 {
 	u32 eax, ebx, ecx, edx;
-
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
 		return 1;
 
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-	if (eax == 0x4ffffffc) {
+/* Assignment 3 */
+    if(eax==0x4ffffffe) {
+		if(ecx >= 0 && ecx <= 69){
+			if(ecx == 35 || ecx == 38 || ecx == 42 || ecx == 65){
+				printk(KERN_INFO "CPUID(0x4FFFFFFE) Exit Number Not Defined: %d", ecx);
+				eax = 0; ebx = 0; ecx = 0; edx = 0xFFFFFFFE;
+			}else{
+				eax = exits_count[(int)ecx];
+				printk(KERN_INFO "CPUID(0x4FFFFFFE) Exit Number = %d, Total Exits = %d", (int)ecx, exits_count[(int)ecx]);
+			}
+		}
+	} else if(eax==0x4fffffff){
+	  	printk(KERN_INFO "CPUID(0x4FFFFFFF) ECX: Exit = %d",(int)ecx);
+		if(ecx >= 0 && ecx <= 69){
+			if(ecx == 35 || ecx == 38 || ecx == 42 || ecx == 65){
+				printk(KERN_INFO "CPUID(0x4FFFFFFF) Exit Number Not Defined %d", ecx);
+				eax = 0; ebx = 0; ecx = 0; edx = 0xFFFFFFFF;
+			}else{
+				ebx = ((exit_cycles[(int)ecx]) >> 32); // high 32 bits
+				ecx = (exit_cycles[(int)ecx] & 0xFFFFFFFF ); // low 32 bits
+                printk(KERN_INFO "CPUID(0x4FFFFFFF) Exit Number = %d, Total Time in vmm: = %llu cycles, EBX=%u & ECX=%u", (int)ecx, exits_cycles[(int)ecx], ebx, ecx);
+			}
+		}else{
+			printk(KERN_INFO "CPUID(0x4FFFFFFF) Received Exit Number Not Defined: %d", ecx);
+			eax = 0; ebx = 0; ecx = 0; edx = 0;
+		}
+	} 
+/* Assignment 3 */
+
+/* Assignment 2*/		
+	else if (eax == 0x4ffffffc) {
 		eax = total_exits;
 		printk(KERN_INFO "CPUID(0x4FFFFFFC), Total Exits = %u", eax);
-	} 
-	else if (eax == 0x4ffffffd) {
+	} else if (eax == 0x4ffffffd) {
 		u64 calc_time;
 		calc_time = total_time_exits;
 		ebx = (calc_time >> 32);
 		ecx = (calc_time & 0xffffffff);
 		printk(KERN_INFO "CPUID(0x4FFFFFFD), Total Time in vmm: %lld cycles, EBX=%u & ECX=%u", calc_time, ebx, ecx);	
 	}
+/* Assignment 2*/	
 	else {
 		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
 	}

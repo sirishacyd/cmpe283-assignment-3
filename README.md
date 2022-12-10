@@ -1,31 +1,33 @@
 # CMPE283 : Virtualization 
-# Assignment 2:  Instrumentation via hypercall
+# Assignment 3:  Instrumentation via hypercall
 - Your assignment is to modify the CPUID emulation code in KVM to report back additional information when special CPUID leaf nodes are requested.
-  - For CPUID leaf node %eax=0x4FFFFFFC:
-    - Return the total number of exits (all types) in %eax
-  - For CPUID leaf node %eax=0x4FFFFFFD:
-    - Return the high 32 bits of the total time spent processing all exits in %ebx
-    - Return the low 32 bits of the total time spent processing all exits in %ecx
-        - %ebx and %ecx return values are measured in processor cycles, across all VCPUs
+  - For CPUID leaf node %eax=0x4FFFFFFE:
+    - Return the number of exits for the exit number provided (on input) in %ecx
+    - This value should be returned in %eax.
+  - For CPUID leaf node %eax=0x4FFFFFFF:
+    - Return the time spent processing the exit number provided (on input) in %ecx
+    - Return the high 32 bits of the total time spent for that exit in %ebx
+    - Return the low 32 bits of the total time spent for that exit in %ecx
     
 #### 1. For each member in your team, provide 1 paragraph detailing what parts of the lab that member  implemented / researched. (You may skip this question if you are doing the lab by yourself).
+- We have use the setup we have done for assignment2 and made necessary code changes and completed Assignment 3.
 - *Sirisha Polisetty(016012477)*
   - Created VM on google cloud compute engine using cloudshell.
   - Build the kernel and installed new modules and reloaded the kernel.
-  - Researched about code changes that are required to implement cpuid `0x4FFFFFFC` and `0x4FFFFFFD` and made code changes in vmx.c
+  - Researched about code changes that are required to implement cpuid `0x4FFFFFFE` and `0x4FFFFFFF` and made code changes in vmx.c
   - complied new changed code and installed modules using `rmmod` and `modprobe` to vm.
   - Launched the VM on hypervisor using qemu-system.
   - Created test_assignment.c to test the changed hypercall `cpuid` and compiled it.
-  - Tested the new cpuid hypercall using compiled test code `./test_assignment2` and documented compiled program and `dmesg` output.
+  - Tested the new cpuid hypercall using compiled test code `./test_assignment3` and documented compiled program and `dmesg` output.
   - committed required screenshots to the github and contirbuted to Readme.md
 - *Jayanth Vishal Reddy Godi (016720080)*
   - Enabled SSH Authentication on VM launched on google cloud using ssh keys.
   - Installed required dependencies on launched VM for building kernel and launching virtual machine on hypervisor.
-  - Researched about code changes that are required to implement cpuid `0x4FFFFFFC` and `0x4FFFFFFD` and made code changes in cpuid.c
+  - Researched about code changes that are required to implement cpuid `0x4FFFFFFE` and `0x4FFFFFFE` and made code changes in cpuid.c
   - Upgraded the ubuntu OS to latest using apt-get update and apt-get upgrade
   - Researched about ways to launch vm on kernel. Tried out virt-manager and qemu-system and decided to go ahed with qemu-system
   - Reloaded new modules in the kernel for `kvm` and `kvm_intel`
-  - tested cpuid functionality using `cpuid -l 0x4FFFFFFC` and `cpuid -l 0x4FFFFFFD` and documented output
+  - tested cpuid functionality using `cpuid -l 0x4FFFFFFE` and `cpuid -l 0x4FFFFFFF` and documented output
   - committed `dmesg` output to the github and contirbuted to Readme.md
 
 #### 2. Describe in detail the steps you used to complete the assignment. Consider your reader to be someone  skilled in software development but otherwise unfamiliar with the assignment. Good answers to this  question will be recipes that someone can follow to reproduce your development steps. Note: I may decide to follow these instructions for random assignments, so you should make sure  they are accurate.
@@ -119,21 +121,21 @@ ssh_pwauth: True
 ### Step 6 
 - Testing CPUID on the VM and Observing Behavior on the Host Modified Kernel for Hypercall
 - Install required items on host vm for observing behavior of cpuid hypercall `sudo apt-get update` and `sudo apt-get install cpuid`
-- Testing for `cpuid -l 0x4FFFFFFC`
+- Testing for `cpuid -l 0x4FFFFFFE`
 ![](screenshots/cpuid_ffc.png)
-- dmesg output for `cpuid -l 0x4FFFFFFC`
+- dmesg output for `cpuid -l 0x4FFFFFFE`
 ![](screenshots/dmesg_ffc.png) 
-- Testing for `cpuid -l 0x4FFFFFFD`
+- Testing for `cpuid -l 0x4FFFFFFE`
 ![](screenshots/cpuid_ffd.png)
-- dmesg output for `cpuid -l 0x4FFFFFFD`
+- dmesg output for `cpuid -l 0x4FFFFFFE`
 ![](screenshots/dmesg_ffd.png) 
 
 ### Step 7
 - Testing using Test Script created for assignment 2
 - Created usermode program [test_assignment2.c](./test_assignment2.c) on Launched VM
-- compile the c program using `gcc -o test_assignment2 test_assignment2.c`
-- execute the program using compiled code `./test_assignment2` on launched VM
-- execute the program using compiled code `./test_assignment2`
+- compile the c program using `gcc -o test_assignment2 test_assignment3.c`
+- execute the program using compiled code `./test_assignment3` on launched VM
+- execute the program using compiled code `./test_assignment3`
 ![](screenshots/test_script_output.png) 
 - check `sudo dmesg` output to observe the kernel logs on kernel machine
 ![](screenshots/dmesg_test_script.png) 
