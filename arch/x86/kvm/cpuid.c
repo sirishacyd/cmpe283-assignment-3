@@ -1470,72 +1470,64 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
 }
 EXPORT_SYMBOL_GPL(kvm_cpuid);
 
-u32 total_exits;
-EXPORT_SYMBOL(total_exits);
-
-u64 total_time_exits;
-EXPORT_SYMBOL(total_time_exits);
-
-u32 exits_count[69];
+u32 exits_count[75];
 EXPORT_SYMBOL(exits_count);
 
-u64 exit_cycles[69];
-EXPORT_SYMBOL(exit_cycles);
+u64 exits_cycles[75];
+EXPORT_SYMBOL(exits_cycles);
 
+bool sdm_not_defined(u32 exit_type) {
+	return  exit_type < 0 || exit_type == 35 || exit_type == 38 || exit_type == 42 || exit_type == 65 || exit_type > 69;
+}
+
+bool kvm_not_defined(u32 exit_type) {
+	return  exit_type < 0 || exit_type == 5 || exit_type == 6 || exit_type == 11 || exit_type == 35 || exit_type == 38 || exit_type == 17 || exit_type == 42 || exit_type == 65 || exit_type == 66 || (exit_type >= 69 && exit_type < 74) || exit_type > 74;
+}
 
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 {
 	u32 eax, ebx, ecx, edx;
+	u32 exit_index;
+
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
 		return 1;
 
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-/* Assignment 3 */
-    if(eax==0x4ffffffe) {
-		if(ecx >= 0 && ecx <= 69){
-			if(ecx == 35 || ecx == 38 || ecx == 42 || ecx == 65){
-				printk(KERN_INFO "CPUID(0x4FFFFFFE) Exit Number Not Defined: %d", ecx);
-				eax = 0; ebx = 0; ecx = 0; edx = 0xFFFFFFFE;
-			}else{
-				eax = exits_count[(int)ecx];
-				printk(KERN_INFO "CPUID(0x4FFFFFFE) Exit Number = %d, Total Exits = %d", (int)ecx, exits_count[(int)ecx]);
-			}
+
+	if(eax == 0x4FFFFFFE) {
+		if (kvm_not_defined(ecx)) {
+			printk(KERN_INFO "CPUID(0x4FFFFFFE) EXIT(%u) is not defined in KVM", ecx);
+			eax = ebx= ecx= 0;
+			edx = 0xFFFFFFFF;
+		} else if (sdm_not_defined(ecx)) {
+			printk(KERN_INFO "CPUID(0x4FFFFFFE) EXIT(%u) is not defined in SDM", ecx);
+			eax = ebx = ecx = edx = 0;
+		} else {
+			eax = exits_count[ecx];
+			ecx = exit_index;
+			printk(KERN_INFO "CPUID(0x4FFFFFFE) EXIT(%u) is called %u times.", ecx, eax);
 		}
-	} else if(eax==0x4fffffff){
-	  	printk(KERN_INFO "CPUID(0x4FFFFFFF) ECX: Exit = %d",(int)ecx);
-		if(ecx >= 0 && ecx <= 69){
-			if(ecx == 35 || ecx == 38 || ecx == 42 || ecx == 65){
-				printk(KERN_INFO "CPUID(0x4FFFFFFF) Exit Number Not Defined %d", ecx);
-				eax = 0; ebx = 0; ecx = 0; edx = 0xFFFFFFFF;
-			}else{
-				ebx = ((exit_cycles[(int)ecx]) >> 32); // high 32 bits
-				ecx = (exit_cycles[(int)ecx] & 0xFFFFFFFF ); // low 32 bits
-                printk(KERN_INFO "CPUID(0x4FFFFFFF) Exit Number = %d, Total Time in vmm: = %llu cycles, EBX=%u & ECX=%u", (int)ecx, exits_cycles[(int)ecx], ebx, ecx);
-			}
-		}else{
-			printk(KERN_INFO "CPUID(0x4FFFFFFF) Received Exit Number Not Defined: %d", ecx);
-			eax = 0; ebx = 0; ecx = 0; edx = 0;
+	} else if(eax == 0x4FFFFFFF) {
+		if (kvm_not_defined(ecx)) {
+			printk(KERN_INFO "CPUID(0x4FFFFFFF) EXIT(%u) is not defined in KVM", ecx);
+			eax = ebx= ecx= 0;	
+			edx = 0xFFFFFFFF;
+		} else if (sdm_not_defined(ecx)) {
+			printk(KERN_INFO "CPUID(0x4FFFFFFF) EXIT(%u) is not defined in SDM", ecx);
+			eax = ebx = ecx = edx = 0;
+		} else {
+			printk(KERN_INFO "CPUID(0x4FFFFFFF) Total Cycles for EXIT(%u): %lld",ecx, exits_cycles[ecx]);
+			ecx = exit_index;
+			ecx = exits_cycles[exit_index] & 0xFFFFFFFF;
+			ebx = (exits_cycles[exit_index] >> 32) & 0xFFFFFFFF;
+			printk(KERN_INFO "CPUID(0x4FFFFFFF) Total Cycles for EXIT(%u): %lld\n\tebx=%u & ecx=%u", exit_index, exits_cycles[exit_index], ebx, ecx);
 		}
 	} 
-/* Assignment 3 */
-
-/* Assignment 2*/		
-	else if (eax == 0x4ffffffc) {
-		eax = total_exits;
-		printk(KERN_INFO "CPUID(0x4FFFFFFC), Total Exits = %u", eax);
-	} else if (eax == 0x4ffffffd) {
-		u64 calc_time;
-		calc_time = total_time_exits;
-		ebx = (calc_time >> 32);
-		ecx = (calc_time & 0xffffffff);
-		printk(KERN_INFO "CPUID(0x4FFFFFFD), Total Time in vmm: %lld cycles, EBX=%u & ECX=%u", calc_time, ebx, ecx);	
-	}
-/* Assignment 2*/	
 	else {
 		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
 	}
-	
+
 	kvm_rax_write(vcpu, eax);
 	kvm_rbx_write(vcpu, ebx);
 	kvm_rcx_write(vcpu, ecx);
