@@ -1505,7 +1505,6 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 			eax = ebx = ecx = edx = 0;
 		} else {
 			eax = exits_count[ecx];
-			ecx = exit_index;
 			printk(KERN_INFO "CPUID(0x4FFFFFFE) EXIT(%u) is called %u times.", ecx, eax);
 		}
 	} else if(eax == 0x4FFFFFFF) {
@@ -1518,7 +1517,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 			eax = ebx = ecx = edx = 0;
 		} else {
 			printk(KERN_INFO "CPUID(0x4FFFFFFF) Total Cycles for EXIT(%u): %lld",ecx, exits_cycles[ecx]);
-			ecx = exit_index;
+			exit_index = ecx;
 			ecx = exits_cycles[exit_index] & 0xFFFFFFFF;
 			ebx = (exits_cycles[exit_index] >> 32) & 0xFFFFFFFF;
 			printk(KERN_INFO "CPUID(0x4FFFFFFF) Total Cycles for EXIT(%u): %lld\n\tebx=%u & ecx=%u", exit_index, exits_cycles[exit_index], ebx, ecx);

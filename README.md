@@ -121,21 +121,22 @@ ssh_pwauth: True
 ### Step 6 
 - Testing CPUID on the VM and Observing Behavior on the Host Modified Kernel for Hypercall
 - Install required items on host vm for observing behavior of cpuid hypercall `sudo apt-get update` and `sudo apt-get install cpuid`
-- Testing for `cpuid -l 0x4FFFFFFE`
-![](screenshots/cpuid_ffc.png)
-- dmesg output for `cpuid -l 0x4FFFFFFE`
-![](screenshots/dmesg_ffc.png) 
-- Testing for `cpuid -l 0x4FFFFFFE`
-![](screenshots/cpuid_ffd.png)
-- dmesg output for `cpuid -l 0x4FFFFFFE`
-![](screenshots/dmesg_ffd.png) 
+- Tested cpuid `0x4FFFFFFE` and `0x4FFFFFFE` using the following script.
+```
+#!/bin/bash
 
-### Step 7
-- Testing using Test Script created for assignment 2
-- Created usermode program [test_assignment2.c](./test_assignment2.c) on Launched VM
-- compile the c program using `gcc -o test_assignment2 test_assignment3.c`
-- execute the program using compiled code `./test_assignment3` on launched VM
-- execute the program using compiled code `./test_assignment3`
-![](screenshots/test_script_output.png) 
-- check `sudo dmesg` output to observe the kernel logs on kernel machine
-![](screenshots/dmesg_test_script.png) 
+for i in {0..76}
+do
+    echo "EXIT $i"
+    cpuid -l $1 -s $i
+done
+```
+- run `bash test_cpuid.sh 0x4ffffffe`
+![](screenshots/cpuid_ffe.png)
+- dmesg output for `cpuid -l 0x4FFFFFFE`
+![](screenshots/dmesg_ffe.png) 
+- run `bash test_cpuid.sh 0x4fffffff`
+![](screenshots/cpuid_fff.png)
+- dmesg output for `cpuid -l 0x4FFFFFFF`
+![](screenshots/dmesg_fff.png) 
+
