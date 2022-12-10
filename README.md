@@ -139,4 +139,4 @@ done
 ![](screenshots/cpuid_fff.png)
 - dmesg output for `cpuid -l 0x4FFFFFFF`
 ![](screenshots/dmesg_fff.png) 
-
+- Full [DMESG log](screenshots/dmesg.out) and Test CPUID Logs for [0x4FFFFFFE](screenshots/test_output_ffe.log) and [0x4FFFFFFF](screenshots/test_output_fff.log)
