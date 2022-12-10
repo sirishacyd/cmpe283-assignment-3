@@ -1479,8 +1479,8 @@ EXPORT_SYMBOL(total_time_exits);
 u32 exits_count[69];
 EXPORT_SYMBOL(exits_count);
 
-u64 exits_cycles[69];
-EXPORT_SYMBOL(exits_cycles);
+u64 exit_cycles[69];
+EXPORT_SYMBOL(exit_cycles);
 
 
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)

@@ -6485,13 +6485,13 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 	u64 exit_start, diff_exit;
 	int ret;
 	extern u64 total_time_exits;
-	extern u64 exits_cycles[69];
+	extern u64 exit_cycles[69];
 	exit_start = rdtsc();
 	ret = __vmx_handle_exit(vcpu, exit_fastpath);
 	diff_exit  = rdtsc() - exit_start;
 	total_time_exits += diff_exit;
 	if (exit_reason.basic <= 69) {
-		exits_cycles[exit_reason.basic]+=diff_exit;
+		exit_cycles[exit_reason.basic]+=diff_exit;
 	}
 
 	/*
