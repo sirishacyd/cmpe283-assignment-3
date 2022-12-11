@@ -18,7 +18,7 @@
   - complied new changed code and installed modules using `rmmod` and `modprobe` to vm.
   - Launched the VM on hypervisor using qemu-system.
   - Created test_assignment.c to test the changed hypercall `cpuid` and compiled it.
-  - Tested the new cpuid hypercall using compiled test code `./test_assignment3` and documented compiled program and `dmesg` output.
+  - Tested the new cpuid hypercall using compiled test code `./test_cpuid.sh` and documented compiled program and `dmesg` output.
   - committed required screenshots to the github and contirbuted to Readme.md
 - *Jayanth Vishal Reddy Godi (016720080)*
   - Enabled SSH Authentication on VM launched on google cloud using ssh keys.
