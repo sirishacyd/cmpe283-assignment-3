@@ -76,7 +76,7 @@ cp -v /boot/config-$(uname -r) .config
 - Note : Fix `No rule to make target 'debian/canonical-certs.pem'` by the following commands
   - `scripts/config --disable SYSTEM_TRUSTED_KEYS`
   - `scripts/config --disable SYSTEM_REVOCATION_KEYS`
-- Build the kernel source code using the following commands
+- Build the kernel source code using the following commands.  
 ```
 sudo make -j <number_of_cpu_cores> modules
 sudo make -j <number_of_cpu_cores>
