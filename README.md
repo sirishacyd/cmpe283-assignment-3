@@ -1,4 +1,4 @@
-# CMPE283 : Virtualization 
+# CMPE283 : Virtualization. 
 # Assignment 3:  Instrumentation Via Hypercall(Continued..)
 - Your assignment is to modify the CPUID emulation code in KVM to report back additional information when special CPUID leaf nodes are requested.
   - For CPUID leaf node %eax=0x4FFFFFFE:
@@ -146,7 +146,7 @@ done
 - Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?
 - We have Observered Exit(10) and Exit(12) Increase at a stable Rate. During our observation as they are frequently called.
 - Of the exit types defined in the SDM, which are the most frequent? Least?
-- The Following is the frequency we have obbserved during our assignment 2 & 3.
+- The Following is the frequency we have obbserved during our assignment 2 & 3.     
 ```
 | Exit Number | Frequency | Exit Name          |                |
 |-------------|-----------|--------------------|----------------|
