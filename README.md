@@ -76,7 +76,7 @@ cp -v /boot/config-$(uname -r) .config
 - Note : Fix `No rule to make target 'debian/canonical-certs.pem'` by the following commands
   - `scripts/config --disable SYSTEM_TRUSTED_KEYS`
   - `scripts/config --disable SYSTEM_REVOCATION_KEYS`
-- Build the kernel source code using the following commands.  
+- Build the kernel source code using the following commands.     
 ```
 sudo make -j <number_of_cpu_cores> modules
 sudo make -j <number_of_cpu_cores>
@@ -141,7 +141,7 @@ done
 ![](screenshots/dmesg_fff.png) 
 - Full [DMESG log](screenshots/dmesg.out) and Test CPUID Logs for [0x4FFFFFFE](screenshots/test_output_ffe.log) and [0x4FFFFFFF](screenshots/test_output_fff.log)
 
-#### Assignment 3 Question Observation
+#### Assignment 3 Question Observation.  
 
 - Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?
 - We have Observered Exit(10) and Exit(12) Increase at a stable Rate. During our observation as they are frequently called.
