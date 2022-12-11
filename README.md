@@ -66,7 +66,7 @@ sudo apt-get install cloud-image-utils
 ![](screenshots/install_dependencies.png)
 
 ### Step 3
-- Download and Build `linux-6.0.7` source code
+- Download and Build `linux-6.0.7` source code  
 ```
 wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.0.7.tar.xz
 tar xvf linux-6.0.7.tar.xz
