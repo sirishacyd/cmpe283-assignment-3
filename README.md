@@ -1,9 +1,9 @@
-# CMPE283 : Virtualization. 
-# Assignment 3:  Instrumentation Via Hypercall(Continued..)
+# CMPE283 : Virtualization 
+# Assignment 3:Instrumentation Via Hypercall(Continued..)
 - Your assignment is to modify the CPUID emulation code in KVM to report back additional information when special CPUID leaf nodes are requested.
   - For CPUID leaf node %eax=0x4FFFFFFE:
-    - Return the number of exits for the exit number provided (on input) in %ecx
-    - This value should be returned in %eax.
+   - Return the number of exits for the exit number provided (on input) in %ecx
+   - This value should be returned in %eax.
   - For CPUID leaf node %eax=0x4FFFFFFF:
     - Return the time spent processing the exit number provided (on input) in %ecx
     - Return the high 32 bits of the total time spent for that exit in %ebx
