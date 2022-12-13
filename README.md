@@ -144,9 +144,26 @@ done
 #### Assignment 3 Question Observation.  
 
 - Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?
-- We have Observered Exit(10) and Exit(12) Increase at a stable Rate. During our observation as they are frequently called.
+  - We have Observered Exit(10) and Exit(12) Increase at a stable Rate. During our observation as they are frequently called for every execution.
+```
+[  455.315082] CPUID(0x4FFFFFFE) EXIT(10) is called 242471 times.
+[  458.987147] CPUID(0x4FFFFFFE) EXIT(10) is called 242480 times.
+[  468.354860] CPUID(0x4FFFFFFE) EXIT(10) is called 242489 times.
+[  499.694458] CPUID(0x4FFFFFFE) EXIT(12) is called 6099 times.
+[  502.096696] CPUID(0x4FFFFFFE) EXIT(12) is called 6116 times.
+[  504.311474] CPUID(0x4FFFFFFE) EXIT(12) is called 6135 times.
+```
+  - A Reboot also generated 1879264 exits.
+```
+[ 1165.829292] CPUID(0x4FFFFFFC), Total Exits = 1804702
+[ 1168.363287] CPUID(0x4FFFFFFC), Total Exits = 1805330
+[ 1170.645720] CPUID(0x4FFFFFFC), Total Exits = 1810762
+[ 1358.589315] CPUID(0x4FFFFFFC), Total Exits = 3690026
+```
 - Of the exit types defined in the SDM, which are the most frequent? Least?
-- The Following is the frequency we have obbserved during our assignment 2 & 3.     
+  - The Following is the frequency we have obbserved during our assignment 2 & 3.
+  - Most Frequent are EXIT(30), EXIT(49) & EXIT(28)
+  - Least Frequent are EXIT(0), EXIT(54) & EXIT(29)
 ```
 | Exit Number | Frequency | Exit Name          |                |
 |-------------|-----------|--------------------|----------------|
